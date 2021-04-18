@@ -2,49 +2,54 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net"
-	"time"
+
+	"github.com/brensch/lights/pkg/wled"
 )
 
 func main() {
 	fmt.Println("yo")
 
-	RemoteAddress := "192.168.1.15:21324"
-	LocalAddress := "172.30.113.145:21324"
-
-	raddr, err := net.ResolveUDPAddr("udp", RemoteAddress)
+	s, err := wled.InitServer([]string{
+		"192.168.1.15",
+	})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	laddr, err := net.ResolveUDPAddr("udp", LocalAddress)
+	err = s.Power(true)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
-	conn, err := net.DialUDP("udp", laddr, raddr)
-	if err != nil {
-		log.Println("Error dialing udp")
-		log.Println(err)
-	}
+	// RemoteAddress := "192.168.1.15:21324"
 
-	i := 0
-	for {
+	// raddr, err := net.ResolveUDPAddr("udp", RemoteAddress)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
-		i++
+	// conn, err := net.DialUDP("udp", nil, raddr)
+	// if err != nil {
+	// 	log.Println("Error dialing udp")
+	// 	log.Println(err)
+	// }
 
-		// data := makeHue(0, 0, byte(i))
-		conn.Write([]byte{1, 1, byte(i), 255, 155, 0})
-		time.Sleep(10 * time.Millisecond)
+	// i := 0
+	// for {
 
-		if i > 255 {
-			i = 0
-		}
+	// 	i++
 
-	}
+	// 	// data := makeHue(0, 0, byte(i))
+	// 	conn.Write([]byte{1, 1, byte(i), 255, 155, 0})
+	// 	time.Sleep(10 * time.Millisecond)
+
+	// 	if i > 255 {
+	// 		i = 0
+	// 	}
+
+	// }
 }
 
 func makeHue(r, g, b byte) []byte {
