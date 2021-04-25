@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"math/rand"
+	"time"
 )
 
 const (
@@ -37,12 +38,37 @@ func (s *Server) SubmitState(state APIState) (err error) {
 			return err
 		}
 
-		resBytes, err := ioutil.ReadAll(res.Body)
+		var resBody APIResponse
+		err = json.NewDecoder(res.Body).Decode(&resBody)
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(string(resBytes))
+		if resBody.Success == nil || !*resBody.Success {
+			return fmt.Errorf("got success = false")
+		}
+
+	}
+
+	return
+}
+
+func (s *Server) RandomEffect() (err error) {
+
+	seed := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(seed)
+	state := APIState{
+		Segments: []APISegment{
+			{
+				EffectId:        r.Intn(118),
+				ColourPaletteID: r.Intn(56),
+			},
+		},
+	}
+
+	err = s.SubmitState(state)
+	if err != nil {
+		return
 	}
 
 	return

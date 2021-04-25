@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"time"
 
 	"github.com/brensch/lights/pkg/wled"
+)
+
+const (
+	changeInterval = 1 * time.Minute
 )
 
 func main() {
@@ -16,11 +22,54 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	_ = s
+	// this is cool as bro
 
-	err = s.Power(true)
-	if err != nil {
-		fmt.Println(err)
+	// for i := time.Now(); i.Before(time.Now().Add(24 * time.Hour)); i = i.Add(10 * time.Minute) {
+	// 	// fmt.Println(i)
+
+	// 	isDark, err := sunutil.TimeIsDark(i)
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 		return
+	// 	}
+
+	// 	fmt.Println("is dark:", i, isDark)
+	// }
+
+	// results, err := sunutil.GetSun(targetTime)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+
+	// fmt.Println("twilight", results.AstronomicalTwilightEnd.Format(time.RFC3339))
+	// fmt.Println(results.NauticalTwilightEnd.Sub(targetTime))
+
+	// fmt.Println(results)
+
+	ticker := time.NewTicker(changeInterval)
+	log.Println("changing pattern")
+
+	s.RandomEffect()
+
+	for {
+
+		select {
+		case <-ticker.C:
+			log.Println("changing pattern")
+			err = s.RandomEffect()
+			if err != nil {
+				log.Println(err)
+			}
+		}
+
 	}
+
+	// err = s.Power(true)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	// RemoteAddress := "192.168.1.15:21324"
 

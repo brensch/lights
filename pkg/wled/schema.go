@@ -38,6 +38,7 @@ type APIResponse struct {
 	Info     *APIInfo  `json:"info,omitempty"`
 	Effects  []string  `json:"effects,omitempty"`
 	Palettes []string  `json:"palettes,omitempty"`
+	Success  *bool     `json:"success,omitempty"`
 }
 
 type APIInfo struct {
@@ -75,19 +76,21 @@ type APIState struct {
 	Pl         int                 `json:"pl,omitempty"`
 	Nl         *APINightLightState `json:"nl,omitempty"`
 	Udpn       *UDPState           `json:"udpn,omitempty"`
-	Seg        []struct {
-		Start int     `json:"start,omitempty"`
-		Stop  int     `json:"stop,omitempty"`
-		Len   int     `json:"len,omitempty"`
-		Col   [][]int `json:"col,omitempty"`
-		Fx    int     `json:"fx,omitempty"`
-		Sx    int     `json:"sx,omitempty"`
-		Ix    int     `json:"ix,omitempty"`
-		Pal   int     `json:"pal,omitempty"`
-		Sel   bool    `json:"sel,omitempty"`
-		Rev   bool    `json:"rev,omitempty"`
-		Cln   int     `json:"cln,omitempty"`
-	} `json:"seg,omitempty"`
+	Segments   []APISegment        `json:"seg,omitempty"`
+}
+
+type APISegment struct {
+	Start           int     `json:"start,omitempty"`
+	Stop            int     `json:"stop,omitempty"`
+	Len             int     `json:"len,omitempty"`
+	Col             [][]int `json:"col,omitempty"`
+	EffectId        int     `json:"fx,omitempty"`
+	EffectSpeed     int     `json:"sx,omitempty"`
+	EffectIntensity int     `json:"ix,omitempty"`
+	ColourPaletteID int     `json:"pal,omitempty"`
+	Sel             bool    `json:"sel,omitempty"`
+	Rev             bool    `json:"rev,omitempty"`
+	Cln             int     `json:"cln,omitempty"`
 }
 
 type APINightLightState struct {
