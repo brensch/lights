@@ -17,11 +17,18 @@ const (
 // Led stores information about a single LED.
 // Storing X and Y in order to potentially expand to 2d graphics.
 type Led struct {
-	XLocation int
-	YLocation int
-	Red       int
-	Green     int
-	Blue      int
+	xLocation int
+	yLocation int
+
+	state LedState
+
+	lock sync.Mutex
+}
+
+type LedState struct {
+	Red   byte
+	Green byte
+	Blue  byte
 }
 
 type Server struct {
