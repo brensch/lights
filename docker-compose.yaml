@@ -1,0 +1,5 @@
+version: "3"
+services:
+  lights:
+    build: .
+    restart: always
