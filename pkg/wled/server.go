@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func InitServer(ips []string) (server *Server, err error) {
+func InitServer(ips []string, stringLength int) (server *Server, err error) {
 
 	server = &Server{
 		httpClient: &http.Client{
@@ -18,7 +18,12 @@ func InitServer(ips []string) (server *Server, err error) {
 				TLSHandshakeTimeout: 5 * time.Second,
 			},
 		},
-		ips: ips,
+		ips:  ips,
+		leds: make([]*Led, stringLength),
+	}
+
+	for i := range server.leds {
+		server.leds[i] = new(Led)
 	}
 
 	for _, ip := range ips {
@@ -39,12 +44,32 @@ func InitServer(ips []string) (server *Server, err error) {
 
 	}
 
+	// start led sync loop
+	// TODO: maybe make this able to be turned off
+	go func() {
+		for {
+			server.WriteLedState()
+			time.Sleep(1 * time.Millisecond)
+		}
+	}()
+
 	return
 }
 
-func (s *Server) Leds() []Led {
+func (s *Server) Leds() []*Led {
 	s.lock.Lock()
 	leds := s.leds
 	s.lock.Unlock()
 	return leds
+}
+
+// WriteLedState blasts state of server to all connected wled devices
+func (s *Server) WriteLedState() {
+	packets := ConstructPackets(s.Leds())
+	for _, packet := range packets {
+		for _, conn := range s.conns {
+			conn.Write(packet)
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
 }

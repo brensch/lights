@@ -37,7 +37,7 @@ type Server struct {
 	httpClient *http.Client
 	lock       sync.Mutex
 
-	leds []Led
+	leds []*Led
 }
 
 type APIResponse struct {
