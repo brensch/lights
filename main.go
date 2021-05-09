@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/brensch/lights/pkg/sunutil"
 	"github.com/brensch/lights/pkg/wled"
 )
 
@@ -36,21 +35,21 @@ func main() {
 
 		select {
 		case <-ticker.C:
-			isDark, err := sunutil.TimeIsDark(time.Now())
-			if err != nil {
-				log.Println(err)
-				break
-			}
+			// isDark, err := sunutil.TimeIsDark(time.Now())
+			// if err != nil {
+			// 	log.Println(err)
+			// 	break
+			// }
 
-			// turn off if it isn't dark or it's after 12am
-			if !isDark || time.Now().Hour() < 12 || true {
-				err = s.Power(false)
-				if err != nil {
-					log.Println(err)
-				}
+			// // turn off if it isn't dark or it's after 12am
 
-				continue
-			}
+			// 	err = s.Power(false)
+			// 	if err != nil {
+			// 		log.Println(err)
+			// 	}
+
+			// 	continue
+			// }
 
 			err = s.Power(true)
 			if err != nil {
