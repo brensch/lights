@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	changeInterval = 10 * time.Second
+	changeInterval = 5 * time.Minute
 
 	IPs = "192.168.1.2" // comma separated IPs
 )
