@@ -29,16 +29,6 @@ func main() {
 		return
 	}
 
-	// err = s.Power(true)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
-	err = s.RandomEffect()
-	if err != nil {
-		log.Println(err)
-	}
-
 	// check daylight every five minutes and if it's not daylight and not after 12am, pick a random pattern
 	ticker := time.NewTicker(changeInterval)
 
@@ -53,7 +43,7 @@ func main() {
 			}
 
 			// turn off if it isn't dark or it's after 12am
-			if isDark {
+			if !isDark {
 				err = s.Power(false)
 				if err != nil {
 					log.Println(err)
