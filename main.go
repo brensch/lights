@@ -5,11 +5,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/brensch/lights/pkg/sunutil"
 	"github.com/brensch/lights/pkg/wled"
 )
 
 var (
-	changeInterval = 1 * time.Minute
+	changeInterval = 10 * time.Second
 
 	IPs = "192.168.1.2" // comma separated IPs
 )
@@ -22,10 +23,20 @@ func main() {
 
 	s, err := wled.InitServer([]string{
 		"192.168.1.2",
-	}, 300)
+	}, 600)
 	if err != nil {
 		log.Println(err)
 		return
+	}
+
+	// err = s.Power(true)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	err = s.RandomEffect()
+	if err != nil {
+		log.Println(err)
 	}
 
 	// check daylight every five minutes and if it's not daylight and not after 12am, pick a random pattern
@@ -35,21 +46,21 @@ func main() {
 
 		select {
 		case <-ticker.C:
-			// isDark, err := sunutil.TimeIsDark(time.Now())
-			// if err != nil {
-			// 	log.Println(err)
-			// 	break
-			// }
+			isDark, err := sunutil.TimeIsDark(time.Now())
+			if err != nil {
+				log.Println(err)
+				break
+			}
 
-			// // turn off if it isn't dark or it's after 12am
+			// turn off if it isn't dark or it's after 12am
+			if isDark {
+				err = s.Power(false)
+				if err != nil {
+					log.Println(err)
+				}
 
-			// 	err = s.Power(false)
-			// 	if err != nil {
-			// 		log.Println(err)
-			// 	}
-
-			// 	continue
-			// }
+				continue
+			}
 
 			err = s.Power(true)
 			if err != nil {

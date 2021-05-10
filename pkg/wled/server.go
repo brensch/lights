@@ -44,14 +44,14 @@ func InitServer(ips []string, stringLength int) (server *Server, err error) {
 
 	}
 
-	// start led sync loop
-	// TODO: maybe make this able to be turned off
-	go func() {
-		for {
-			server.WriteLedState()
-			time.Sleep(1 * time.Millisecond)
-		}
-	}()
+	// // start led sync loop
+	// // TODO: maybe make this able to be turned off
+	// go func() {
+	// 	for {
+	// 		server.WriteLedState()
+	// 		time.Sleep(1 * time.Millisecond)
+	// 	}
+	// }()
 
 	return
 }
