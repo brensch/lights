@@ -19,6 +19,36 @@ func init() {
 	flag.StringVar(&IPs, "ips", IPs, "comma separated list of IPs of WLED devices")
 }
 
+func doRandomEffect(s *wled.Server) {
+	isDark, err := sunutil.TimeIsDark(time.Now())
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Printf("%t", isDark)
+
+	// turn off if it isn't dark or it's after 12am
+	if !isDark {
+		err = s.Power(false)
+		if err != nil {
+			log.Println(err)
+		}
+
+		return
+	}
+
+	err = s.Power(true)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = s.RandomEffect()
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func main() {
 
 	s, err := wled.InitServer([]string{
@@ -33,35 +63,10 @@ func main() {
 	ticker := time.NewTicker(changeInterval)
 
 	for {
-
+		doRandomEffect(s)
 		select {
 		case <-ticker.C:
-			isDark, err := sunutil.TimeIsDark(time.Now())
-			if err != nil {
-				log.Println(err)
-				break
-			}
-
-			// turn off if it isn't dark or it's after 12am
-			if !isDark {
-				err = s.Power(false)
-				if err != nil {
-					log.Println(err)
-				}
-
-				continue
-			}
-
-			err = s.Power(true)
-			if err != nil {
-				log.Println(err)
-			}
-
-			err = s.RandomEffect()
-			if err != nil {
-				log.Println(err)
-			}
-
+			doRandomEffect(s)
 		}
 
 	}
