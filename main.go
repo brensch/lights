@@ -26,8 +26,6 @@ func doRandomEffect(s *wled.Server) {
 		return
 	}
 
-	log.Printf("%t", isDark)
-
 	// turn off if it isn't dark or it's after 12am
 	if !isDark {
 		err = s.Power(false)

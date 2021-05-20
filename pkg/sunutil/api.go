@@ -3,6 +3,7 @@ package sunutil
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -56,6 +57,12 @@ func TimeIsDark(targetTime time.Time) (dark bool, err error) {
 
 	dark = sun.AstronomicalTwilightEnd.Before(targetTime) || sun.AstronomicalTwilightBegin.After(targetTime)
 
+	log.Printf("dark: %t: target: %s, night start: %s, night end: %s",
+		dark,
+		targetTime.Format(time.RFC3339),
+		sun.CivilTwilightEnd.Local().Format(time.RFC3339),
+		sun.CivilTwilightBegin.Local().Format(time.RFC3339),
+	)
 	return
 
 }
