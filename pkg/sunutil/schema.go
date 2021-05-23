@@ -6,6 +6,10 @@ import (
 
 const (
 	endPoint = "https://api.sunrise-sunset.org/json"
+
+	latitude  = "37.3996161838102"
+	longitude = "-122.10145712094311"
+	timeZone  = "America/Los_Angeles"
 )
 
 type APIResponse struct {

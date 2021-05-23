@@ -20,14 +20,14 @@ func init() {
 }
 
 func doRandomEffect(s *wled.Server) {
-	isDark, err := sunutil.TimeIsDark(time.Now())
+	isLight, err := sunutil.TimeIsLight(time.Now())
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	// turn off if it isn't dark or it's after 12am
-	if !isDark {
+	// turn off if it isn't light
+	if !isLight {
 		err = s.Power(false)
 		if err != nil {
 			log.Println(err)
@@ -60,62 +60,14 @@ func main() {
 	// check daylight every five minutes and if it's not daylight and not after 12am, pick a random pattern
 	ticker := time.NewTicker(changeInterval)
 
+	doRandomEffect(s)
 	for {
-		doRandomEffect(s)
 		select {
 		case <-ticker.C:
 			doRandomEffect(s)
 		}
 
 	}
-
-	// for i := time.Now(); i.Before(time.Now().Add(24 * time.Hour)); i = i.Add(10 * time.Minute) {
-	// 	// log.Println(i)
-
-	// 	isDark, err := sunutil.TimeIsDark(i)
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		return
-	// 	}
-
-	// 	log.Println("is dark:", i, isDark)
-	// }
-
-	// results, err := sunutil.GetSun(targetTime)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
-
-	// log.Println("twilight", results.AstronomicalTwilightEnd.Format(time.RFC3339))
-	// log.Println(results.NauticalTwilightEnd.Sub(targetTime))
-
-	// log.Println(results)
-
-	// ticker := time.NewTicker(changeInterval)
-	// log.Println("changing pattern")
-
-	// s.RandomEffect()
-
-	// for {
-
-	// 	select {
-	// 	case <-ticker.C:
-	// 		log.Println("changing pattern")
-	// 		err = s.RandomEffect()
-	// 		if err != nil {
-	// 			log.Println(err)
-	// 		}
-	// 	}
-
-	// }
-
-	// err = s.Power(true)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
-	// log.Println("starting")
 
 	// go func() {
 	// 	lightsOn := 0

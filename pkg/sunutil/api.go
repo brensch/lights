@@ -3,7 +3,6 @@ package sunutil
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -18,11 +17,15 @@ func GetSun(targetTime time.Time) (results *APIResults, err error) {
 
 	q := req.URL.Query()
 
-	q.Add("lat", "37.3996161838102")
-	q.Add("lng", "-122.10145712094311")
+	zone, err := time.LoadLocation(timeZone)
+	if err != nil {
+		return
+	}
+
+	q.Add("lat", latitude)
+	q.Add("lng", longitude)
 	q.Add("formatted", "0")
-	// fmt.Println("utc time", targetTime.Format("2006-01-02"))
-	q.Add("date", targetTime.Format("2006-01-02"))
+	q.Add("date", targetTime.In(zone).Format("2006-01-02"))
 	req.URL.RawQuery = q.Encode()
 
 	res, err := http.DefaultClient.Do(req)
@@ -48,21 +51,16 @@ func GetSun(targetTime time.Time) (results *APIResults, err error) {
 	return
 }
 
-func TimeIsDark(targetTime time.Time) (dark bool, err error) {
+func TimeIsLight(targetTime time.Time) (light bool, err error) {
 
 	sun, err := GetSun(targetTime)
 	if err != nil {
 		return
 	}
 
-	dark = sun.AstronomicalTwilightEnd.Before(targetTime) || sun.AstronomicalTwilightBegin.After(targetTime)
+	// start and end of twilight at when it starts and ends being light
+	light = targetTime.After(sun.CivilTwilightBegin) && targetTime.Before(sun.CivilTwilightEnd)
 
-	log.Printf("dark: %t: target: %s, night start: %s, night end: %s",
-		dark,
-		targetTime.Format(time.RFC3339),
-		sun.CivilTwilightEnd.Local().Format(time.RFC3339),
-		sun.CivilTwilightBegin.Local().Format(time.RFC3339),
-	)
 	return
 
 }
