@@ -1,7 +1,6 @@
 package sunutil
 
 import (
-	"os"
 	"time"
 )
 
@@ -12,10 +11,6 @@ const (
 	longitude = "-122.10145712094311"
 	timeZone  = "America/Los_Angeles"
 )
-
-func init() {
-	os.Setenv("TZ", timeZone)
-}
 
 type APIResponse struct {
 	Results *APIResults `json:"results"`
