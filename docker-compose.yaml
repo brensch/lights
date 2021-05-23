@@ -3,3 +3,5 @@ services:
   lights:
     build: .
     restart: always
+    environment:
+      - TZ=America/Los_Angeles
