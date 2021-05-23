@@ -18,15 +18,10 @@ func GetSun(targetTime time.Time) (results *APIResults, err error) {
 
 	q := req.URL.Query()
 
-	zone, err := time.LoadLocation(timeZone)
-	if err != nil {
-		return
-	}
-
 	q.Add("lat", latitude)
 	q.Add("lng", longitude)
 	q.Add("formatted", "0")
-	q.Add("date", targetTime.In(zone).Format("2006-01-02"))
+	q.Add("date", targetTime.Local().Format("2006-01-02"))
 	req.URL.RawQuery = q.Encode()
 
 	res, err := http.DefaultClient.Do(req)
@@ -63,7 +58,7 @@ func TimeIsLight(targetTime time.Time) (light bool, err error) {
 	light = targetTime.After(sun.CivilTwilightBegin) && targetTime.Before(sun.CivilTwilightEnd)
 	log.Printf("light: %t: target: %s, twilight start: %s, twilight end: %s",
 		light,
-		targetTime.Format(time.RFC3339),
+		targetTime.Local().Format(time.RFC3339),
 		sun.CivilTwilightBegin.Local().Format(time.RFC3339),
 		sun.CivilTwilightEnd.Local().Format(time.RFC3339),
 	)
