@@ -26,8 +26,8 @@ func doRandomEffect(s *wled.Server) {
 		return
 	}
 
-	// turn off if it isn't light
-	if !isLight {
+	// turn off if it is light
+	if isLight {
 		err = s.Power(false)
 		if err != nil {
 			log.Println(err)
