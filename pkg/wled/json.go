@@ -83,7 +83,7 @@ func (s *Server) RandomEffect() (err error) {
 	state := APIState{
 		Segments: []APISegment{
 			{
-				EffectId: r.Intn(118),
+				EffectId: goodForTwoColours[r.Intn(len(goodForTwoColours))],
 				// ColourPaletteID: r.Intn(56),
 			},
 		},
