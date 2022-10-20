@@ -1,11 +1,12 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"log"
+	"net/http"
 	"time"
 
-	"github.com/brensch/lights/pkg/sunutil"
 	"github.com/brensch/lights/pkg/wled"
 )
 
@@ -19,35 +20,11 @@ func init() {
 	flag.StringVar(&IPs, "ips", IPs, "comma separated list of IPs of WLED devices")
 }
 
-func doRandomEffect(s *wled.Server) {
-	isLight, err := sunutil.TimeIsLight(time.Now())
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	// turn off if it is light
-	if isLight {
-		err = s.Power(false)
-		if err != nil {
-			log.Println(err)
-		}
-
-		return
-	}
-
-	err = s.Power(true)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = s.RandomEffect()
-	if err != nil {
-		log.Println(err)
-	}
-}
-
 func main() {
+
+	// the sun api had a bad certificate for like a month meaning the lights weren't coming on.
+	// if someone wants to spoof it to make the lights turn on more than they should, good for them.
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	s, err := wled.InitServer([]string{
 		"192.168.1.2",

@@ -53,6 +53,29 @@ func (s *Server) SubmitState(state APIState) (err error) {
 	return
 }
 
+func (s *Server) GetStates() ([]*APIState, error) {
+
+	var states []*APIState
+	for _, ip := range s.ips {
+
+		target := fmt.Sprintf("http://%s%s", ip, JSONEndpoint)
+		res, err := s.httpClient.Get(target)
+		if err != nil {
+			return nil, err
+		}
+
+		var resBody *APIState
+		err = json.NewDecoder(res.Body).Decode(&resBody)
+		if err != nil {
+			return nil, err
+		}
+
+		states = append(states, resBody)
+	}
+
+	return states, nil
+}
+
 func (s *Server) RandomEffect() (err error) {
 
 	seed := rand.NewSource(time.Now().UnixNano())

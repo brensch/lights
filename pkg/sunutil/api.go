@@ -3,7 +3,6 @@ package sunutil
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -47,22 +46,15 @@ func GetSun(targetTime time.Time) (results *APIResults, err error) {
 	return
 }
 
-func TimeIsLight(targetTime time.Time) (light bool, err error) {
+func TimeIsLight(targetTime time.Time) (bool, error) {
 
 	sun, err := GetSun(targetTime)
 	if err != nil {
-		return
+		return false, err
 	}
 
 	// start and end of twilight at when it starts and ends being light
-	light = targetTime.Before(sun.Sunset) && targetTime.After(sun.Sunrise)
-	log.Printf("light: %t: target: %s, sunset: %s, sunrise: %s",
-		light,
-		targetTime.Local().Format(time.RFC3339),
-		sun.Sunset.Local().Format(time.RFC3339),
-		sun.Sunrise.Local().Format(time.RFC3339),
-	)
-
-	return
+	light := targetTime.Before(sun.Sunset) && targetTime.After(sun.Sunrise)
+	return light, nil
 
 }
