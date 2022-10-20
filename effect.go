@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -15,8 +14,6 @@ func doRandomEffect(s *wled.Server) {
 		log.Println(err)
 		return
 	}
-
-	fmt.Println("hour", time.Now().Local().Hour())
 
 	// turn off at midnight
 	if time.Now().Local().Hour() < 12 {
